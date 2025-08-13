@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { NavigationMenu, NavigationMenuList, NavigationMenuItem } from "@/components/ui/navigation-menu";
+import { Button } from "@/components/ui/button";
+import { LogOut, DollarSign } from "lucide-react";
 
 function getYouTubeId(url: string) {
   try {
@@ -12,7 +15,7 @@ function getYouTubeId(url: string) {
     if (u.searchParams.has("v")) {
       return u.searchParams.get("v");
     }
-  } catch (e) {
+  } catch {
     return null;
   }
   return null;
@@ -34,13 +37,19 @@ export default function HomePage() {
 
     setLoading(true);
     try {
-      const res = await fetch("/api/transcribe", {
+      const res = await fetch("/api/transcript", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ videoId }),
       });
+
       const data = await res.json();
-      setTranscript(data || []);
+      if (!res.ok) {
+        alert(data.error || "Failed to get transcript");
+        return;
+      }
+
+      setTranscript(data.transcript || []);
     } catch (err) {
       console.error("Error fetching transcript:", err);
     } finally {
@@ -67,26 +76,39 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Top Navbar */}
-      <nav className="flex justify-between items-center bg-gray-900 text-white px-6 py-3">
-        <h1 className="text-lg font-bold">YT Transcript + Gemini</h1>
-        <div className="flex gap-3">
-          <Link href="/sign-in">
-            <button className="bg-indigo-500 px-4 py-2 rounded hover:bg-indigo-600">
-              Sign In
-            </button>
-          </Link>
-          <Link href="/sign-up">
-            <button className="bg-green-500 px-4 py-2 rounded hover:bg-green-600">
-              Sign Up
-            </button>
-          </Link>
+      {/* Navbar */}
+      <nav className="bg-gray-900 text-white px-6 py-3 flex justify-between items-center shadow-lg">
+        <NavigationMenu>
+          <NavigationMenuList className="gap-6">
+            <NavigationMenuItem>
+              <Link href="/" className="text-lg font-bold hover:text-yellow-400 transition">
+                YT Transcript + Gemini
+              </Link>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <Link
+                href="/quiz-access"
+                className="relative flex items-center gap-2 px-5 py-2 rounded-full bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 text-black font-semibold shadow-lg shadow-yellow-500/50 hover:shadow-yellow-400/80 transition-all duration-300 hover:scale-105"
+              >
+                <span className="absolute inset-0 rounded-full bg-yellow-300 opacity-30 blur-md animate-pulse"></span>
+                <DollarSign className="w-5 h-5 text-yellow-900 drop-shadow" />
+                Quiz (Paid)
+              </Link>
+            </NavigationMenuItem>
+          </NavigationMenuList>
+        </NavigationMenu>
+
+        <div className="flex items-center gap-4">
+          <Button variant="destructive" size="sm" className="flex items-center gap-1 px-4 py-2 rounded">
+            <LogOut className="w-4 h-4" />
+            Logout
+          </Button>
         </div>
       </nav>
 
       {/* Main Content */}
       <div className="flex flex-1">
-        {/* Left side - Video + Transcript */}
+        {/* Video & Transcript */}
         <div className="w-1/2 p-6 border-r overflow-y-auto">
           <div className="flex gap-2 mb-4">
             <input
@@ -129,7 +151,7 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Right side - Gemini Q&A */}
+        {/* Gemini Q&A */}
         <div className="w-1/2 p-6 overflow-y-auto">
           <h2 className="text-xl font-bold mb-4">Ask Gemini AI</h2>
           <textarea
