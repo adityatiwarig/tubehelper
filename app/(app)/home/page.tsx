@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { LogOut, DollarSign } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useClerk } from "@clerk/nextjs";
+import { useUser } from "@clerk/nextjs";
+
 
 
 
@@ -39,6 +41,7 @@ export default function Home() {
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
   const [asking, setAsking] = useState(false);
+  const { user } = useUser();
 
   const videoId = useMemo(() => getYouTubeId(videoUrl || "") || "", [videoUrl]);
 
@@ -138,66 +141,68 @@ export default function Home() {
         <div className="absolute -bottom-40 -right-40 h-96 w-96 rounded-full bg-purple-600/30 blur-3xl" />
       </div>
 
-      <nav className="bg-gray-900 text-white px-6 py-3 flex justify-between items-center shadow-lg">
+        <nav className="bg-gray-900 text-white px-6 py-3 flex justify-between items-center shadow-lg">
       <NavigationMenu className="w-full">
-  <NavigationMenuList className="flex items-center gap-6">
-    {/* Logo / Home */}
-    <NavigationMenuItem>
-      <Link
-        href="/"
-        className="flex items-center gap-2 text-lg font-bold text-white hover:text-yellow-400 transition-colors duration-200"
-      >
-        <span className="inline-block w-2 h-2 rounded-full bg-yellow-400 animate-pulse"></span>
-        YT Transcript + Gemini
-      </Link>
-    </NavigationMenuItem>
+        <NavigationMenuList className="flex items-center gap-6">
+          {/* Logo / Home */}
+          <NavigationMenuItem>
+            <Link
+              href="/"
+              className="flex items-center gap-2 text-lg font-bold text-white hover:text-yellow-400 transition-colors duration-200"
+            >
+              <span className="inline-block w-2 h-2 rounded-full bg-yellow-400 animate-pulse"></span>
+              YT Transcript + Gemini
+            </Link>
+          </NavigationMenuItem>
 
-    {/* Quiz (Paid) */}
-    <NavigationMenuItem>
-      <Link
-        href="/quiz-access"
-        className="relative flex items-center gap-2 px-5 py-2 rounded-full bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 text-black font-semibold shadow-lg shadow-yellow-500/50 hover:shadow-yellow-400/80 transition-all duration-300 hover:scale-105"
-      >
-        <span className="absolute inset-0 rounded-full bg-yellow-300 opacity-20 blur-md animate-pulse"></span>
-        <DollarSign className="w-5 h-5 text-yellow-900 drop-shadow" />
-        Quiz (Paid)
-      </Link>
-    </NavigationMenuItem>
+          {/* Quiz (Paid) */}
+          <NavigationMenuItem>
+            <Link
+              href="/quiz-access"
+              className="relative flex items-center gap-2 px-5 py-2 rounded-full bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 text-black font-semibold shadow-lg shadow-yellow-500/50 hover:shadow-yellow-400/80 transition-all duration-300 hover:scale-105"
+            >
+              <span className="absolute inset-0 rounded-full bg-yellow-300 opacity-20 blur-md animate-pulse"></span>
+              <DollarSign className="w-5 h-5 text-yellow-900 drop-shadow" />
+              Quiz (Paid)
+            </Link>
+          </NavigationMenuItem>
 
-    {/* Docs Link */}
-    <NavigationMenuItem>
-<Link href="/docs" className="hover:text-yellow-400 transition">
-    Docs
-  </Link>
-    </NavigationMenuItem>
+          {/* Docs Link */}
+          <NavigationMenuItem>
+            <Link href="/docs" className="hover:text-yellow-400 transition">
+              Docs
+            </Link>
+          </NavigationMenuItem>
 
-    {/* Contact */}
-    <NavigationMenuItem>
-      <Link
-        href="/contact"
-        className="text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10 px-4 py-2 rounded-lg transition-colors duration-200"
-      >
-        Contact
-      </Link>
-    </NavigationMenuItem>
-  </NavigationMenuList>
-</NavigationMenu>
+          {/* Contact */}
+          <NavigationMenuItem>
+            <Link
+              href="/contact"
+              className="text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10 px-4 py-2 rounded-lg transition-colors duration-200"
+            >
+              Contact
+            </Link>
+          </NavigationMenuItem>
+        </NavigationMenuList>
+      </NavigationMenu>
 
-
-
-        <div className="flex items-center gap-4">
-          <Button
-  variant="destructive"
-  size="sm"
-  className="flex items-center gap-1 px-4 py-2 rounded"
-  onClick={handleLogout}
->
-  <LogOut className="w-4 h-4" />
-  Logout
-</Button>
-
-        </div>
-</nav>
+      <div className="flex items-center gap-4">
+        {user && (
+          <span className="text-sm text-gray-300">
+            {user.primaryEmailAddress?.emailAddress}
+          </span>
+        )}
+        <Button
+          variant="destructive"
+          size="sm"
+          className="flex items-center gap-1 px-4 py-2 rounded"
+          onClick={handleLogout}
+        >
+          <LogOut className="w-4 h-4" />
+          Logout
+        </Button>
+      </div>
+    </nav>
 
 
       {/* Header */}

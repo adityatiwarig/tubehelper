@@ -17,7 +17,7 @@ export default function QuizPage() {
   const [score, setScore] = useState<number | null>(null);
   const router = useRouter();
 
-  // ✅ Backend Access Check
+  // ✅ Access Check
   useEffect(() => {
     async function checkAccess() {
       const res = await fetch("/api/check-subscription");
@@ -71,34 +71,43 @@ export default function QuizPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-100 to-gray-200 text-gray-900">
-      <nav className="bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 shadow-lg px-6 py-3 flex justify-between items-center">
-        <h1 className="font-extrabold text-xl tracking-wide text-white drop-shadow-lg">⚡ AI Quiz</h1>
+    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-black text-white">
+      {/* Navbar */}
+      <nav className="backdrop-blur-md bg-white/10 shadow-lg px-6 py-3 flex justify-between items-center border-b border-white/20">
+        <h1 className="font-extrabold text-2xl tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500">
+          ⚡ AI Quiz
+        </h1>
         <div className="flex gap-6">
-          <a href="/" className="hover:underline text-white font-medium">Home</a>
-          <a href="/quiz" className="hover:underline text-white font-medium">Quiz</a>
+          <a href="/" className="hover:text-purple-300 transition-colors">Home</a>
+          <a href="/quiz" className="hover:text-purple-300 transition-colors">Quiz</a>
         </div>
       </nav>
 
+      {/* Content */}
       <div className="max-w-3xl mx-auto p-6">
-        <h2 className="text-3xl font-bold mb-4 text-center text-purple-700">Generate Your Quiz</h2>
-        <div className="flex gap-2 mb-6">
+        <h2 className="text-4xl font-extrabold mb-4 text-center bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent drop-shadow-lg">
+          Generate Your Quiz
+        </h2>
+
+        {/* Topic Input */}
+        <div className="flex gap-2 mb-8">
           <input
             type="text"
             placeholder="Enter topic (e.g. JavaScript)"
             value={topic}
             onChange={(e) => setTopic(e.target.value)}
-            className="flex-1 border-2 border-purple-400 rounded-lg p-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-500 shadow-sm"
+            className="flex-1 p-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all"
           />
           <button
             onClick={generateQuiz}
             disabled={loading}
-            className="bg-purple-600 hover:bg-purple-700 text-white px-5 py-2 rounded-lg shadow-md transform hover:scale-105 transition-all"
+            className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-5 py-3 rounded-lg shadow-md transform hover:scale-105 transition-all"
           >
             {loading ? "Generating..." : "Generate"}
           </button>
         </div>
 
+        {/* Questions */}
         {questions.length > 0 && (
           <form
             onSubmit={(e) => {
@@ -110,15 +119,17 @@ export default function QuizPage() {
             {questions.map((q, i) => (
               <div
                 key={i}
-                className="bg-white text-gray-900 p-4 rounded-xl shadow-md hover:shadow-lg border border-gray-200 transition-all"
+                className="bg-white/10 backdrop-blur-md p-5 rounded-2xl shadow-lg border border-white/20 transition-transform hover:scale-[1.02]"
               >
                 <p className="font-semibold text-lg">{i + 1}. {q.question}</p>
-                <div className="mt-2 space-y-2">
+                <div className="mt-3 space-y-2">
                   {q.options.map((opt, idx) => (
                     <label
                       key={idx}
-                      className={`block p-2 rounded-lg cursor-pointer transition ${
-                        answers[i] === opt ? "bg-purple-100 border border-purple-400" : "hover:bg-gray-100"
+                      className={`block p-3 rounded-lg cursor-pointer transition ${
+                        answers[i] === opt
+                          ? "bg-purple-500/30 border border-purple-400"
+                          : "hover:bg-white/5 border border-transparent"
                       }`}
                     >
                       <input
@@ -127,7 +138,7 @@ export default function QuizPage() {
                         value={opt}
                         checked={answers[i] === opt}
                         onChange={() => handleOptionChange(i, opt)}
-                        className="mr-2"
+                        className="mr-2 accent-purple-500"
                       />
                       {opt}
                     </label>
@@ -138,16 +149,17 @@ export default function QuizPage() {
 
             <button
               type="submit"
-              className="bg-green-500 hover:bg-green-600 text-white px-5 py-2 rounded-lg shadow-md transform hover:scale-105 transition-all"
+              className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white py-3 rounded-lg font-bold transform hover:scale-105 transition-all shadow-lg"
             >
               Submit
             </button>
           </form>
         )}
 
+        {/* Score */}
         {score !== null && (
-          <div className="mt-6 bg-blue-100 text-gray-900 p-4 rounded-lg shadow-md border border-blue-300">
-            <p className="font-bold text-lg text-center">
+          <div className="mt-8 bg-gradient-to-r from-blue-400/30 to-cyan-500/30 backdrop-blur-md text-white p-5 rounded-2xl shadow-lg border border-white/20 text-center">
+            <p className="font-bold text-2xl">
               🎯 Your Score: {score} / {questions.length}
             </p>
           </div>

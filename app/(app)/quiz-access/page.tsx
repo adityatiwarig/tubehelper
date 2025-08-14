@@ -49,7 +49,7 @@ export default function QuizAccessPage() {
             )}
           </Button>
           <p className="text-sm text-gray-400 text-center">
-            One-time payment. Lifetime access.
+            Pay and get access...
           </p>
         </CardContent>
       </Card>
