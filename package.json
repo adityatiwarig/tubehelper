@@ -20,6 +20,7 @@
     "clsx": "^2.1.1",
     "fast-xml-parser": "^5.2.5",
     "fetch": "^1.1.0",
+    "get-youtube-id": "^1.0.1",
     "google-translate-api-x": "^10.7.2",
     "lucide-react": "^0.539.0",
     "next": "15.4.6",

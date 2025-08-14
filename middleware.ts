@@ -1,30 +1,53 @@
-import { clerkMiddleware } from "@clerk/nextjs/server";
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
 // ✅ Public pages
-const publicRoutes = ["/sign-in", "/sign-up"];
+const isPublicRoute = createRouteMatcher([
+  "/",
+  "/sign-in",
+  "/sign-up"
+]);
 
-// ✅ Protected pages
-const protectedRoutes = ["/home", "/quiz", "/quiz-access"];
+// ✅ Protected pages (UI)
+const isProtectedRoute = createRouteMatcher([
+  "/home",
+  "/quiz",
+  "/quiz-access"
+]);
+
+// ✅ Public APIs (if any)
+const isPublicApiRoute = createRouteMatcher([
+  // keep empty if no open API
+]);
 
 export default clerkMiddleware(async (auth, req) => {
   const { userId } = await auth();
-  const currentUrl = new URL(req.url);
-  const pathname = currentUrl.pathname;
+  const { pathname } = new URL(req.url);
 
-  // Agar logged in user sign-in ya sign-up pe jaa raha hai → home bhej do
-  if (userId && publicRoutes.includes(pathname)) {
+  const isApiRequest = pathname.startsWith("/api");
+
+  // 🚫 If logged in & on public page → go to /home
+  if (userId && isPublicRoute(req)) {
     return NextResponse.redirect(new URL("/home", req.url));
   }
 
-  // Agar logged in nahi hai aur protected page access kar raha hai → sign-in bhej do
-  if (!userId && protectedRoutes.includes(pathname)) {
+  // 🚫 If logged out & on protected page → go to /sign-in
+  if (!userId && isProtectedRoute(req)) {
     return NextResponse.redirect(new URL("/sign-in", req.url));
+  }
+
+  // 🚫 If logged out & hitting protected API → block
+  if (!userId && isApiRequest && !isPublicApiRoute(req)) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   return NextResponse.next();
 });
 
 export const config = {
-  matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
+  matcher: [
+    "/((?!.*\\..*|_next).*)",
+    "/",
+    "/(api|trpc)(.*)"
+  ],
 };
