@@ -29,6 +29,7 @@
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-player": "^3.3.1",
+    "react-social-icons": "^6.24.0",
     "tailwind-merge": "^3.3.1",
     "xml2js": "^0.6.2",
     "youtube-api-mcp-server": "^1.0.0",

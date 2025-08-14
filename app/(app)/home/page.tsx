@@ -6,6 +6,8 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { LogOut, DollarSign } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useClerk } from "@clerk/nextjs";
+
 
 
 import { NavigationMenu, NavigationMenuList, NavigationMenuItem } from "@/components/ui/navigation-menu";
@@ -27,6 +29,8 @@ export default function Home() {
   const [lang, setLang] = useState("en");
   const [transcript, setTranscript] = useState<TranscriptLine[]>([]);
   const [loading, setLoading] = useState(false);
+  const { signOut } = useClerk();
+
   const [errorMsg, setErrorMsg] = useState("");
 
   const router = useRouter();
@@ -119,8 +123,9 @@ export default function Home() {
   };
 
     const handleLogout = () => {
-  // Yaha logout API ya token clear karna ho to karo
-  window.location.href = "/"; // Default Next.js landing page
+  signOut(() => {
+    window.location.href = "/";
+  });
 };
 
 
@@ -161,12 +166,9 @@ export default function Home() {
 
     {/* Docs Link */}
     <NavigationMenuItem>
-      <Link
-        href="/docs"
-        className="text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10 px-4 py-2 rounded-lg transition-colors duration-200"
-      >
-        Docs
-      </Link>
+<Link href="/docs" className="hover:text-yellow-400 transition">
+    Docs
+  </Link>
     </NavigationMenuItem>
 
     {/* Contact */}
@@ -185,14 +187,15 @@ export default function Home() {
 
         <div className="flex items-center gap-4">
           <Button
-            variant="destructive"
-            size="sm"
-            className="flex items-center gap-1 px-4 py-2 rounded"
-            onClick={handleLogout}
-          >
-            <LogOut className="w-4 h-4" />
-            Logout
-          </Button>
+  variant="destructive"
+  size="sm"
+  className="flex items-center gap-1 px-4 py-2 rounded"
+  onClick={handleLogout}
+>
+  <LogOut className="w-4 h-4" />
+  Logout
+</Button>
+
         </div>
 </nav>
 

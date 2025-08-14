@@ -28,7 +28,7 @@ export default function Home() {
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-6 py-12 text-white">
         <h1 className="flex items-center gap-2 text-4xl sm:text-5xl font-extrabold text-center bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 animate-pulse">
           <Sparkles className="w-8 h-8 text-yellow-300" />
-          YT Transcript + Gemini
+          TUBEHELPER + Gemini
         </h1>
 
         <p className="mt-6 text-lg text-slate-300 text-center max-w-xl">
